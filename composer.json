@@ -1,0 +1,20 @@
+{
+	"name": "stalxed/rollingcurl",
+	"description": "The library provides a number of system functions.",
+	"type": "library",
+	"homepage": "http://stalxed.ru",
+	"authors": [
+        {
+            "name": "stalxed",
+            "email": "public@stalxed.ru"
+        }
+    ],
+	"require": {
+	    "php": ">=5.2.0"
+	},
+    "autoload": {
+        "classmap": [
+            "library/RollingCurl/"
+        ]
+    }
+}
