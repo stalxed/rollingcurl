@@ -1,6 +1,6 @@
 {
 	"name": "stalxed/rollingcurl",
-	"description": "The library provides a number of system functions.",
+	"description": "The library provides a wrapper over multicurl.",
 	"type": "library",
 	"homepage": "http://stalxed.ru",
 	"authors": [
