@@ -263,6 +263,8 @@ class RollingCurl {
             throw new RollingCurlException("Window size must be greater than 1");
         }
 
+        $exceptionInCallback = null;
+
         $master = curl_multi_init();
 
         // start the first batch of requests
@@ -296,11 +298,18 @@ class RollingCurl {
 	            $key = (string)$done['handle'];
                     $request = $this->requests[$this->requestMap[$key]];
                     unset($this->requestMap[$key]);
-                    call_user_func($callback, $output, $info, $request);
+
+                    try {
+                        if (! isset($exceptionInCallback)) {
+                            call_user_func($callback, $output, $info, $request);
+                        }
+                    } catch (Exception $e) {
+                        $exceptionInCallback = $e;
+                    }
                 }
 
                 // start a new request (it's important to do this before removing the old one)
-                if ($i < sizeof($this->requests) && isset($this->requests[$i]) && $i < count($this->requests)) {
+                if (! isset($exceptionInCallback) && $i < sizeof($this->requests) && isset($this->requests[$i]) && $i < count($this->requests)) {
                     $ch = curl_init();
                     $options = $this->get_options($this->requests[$i]);
                     curl_setopt_array($ch,$options);
@@ -323,6 +332,11 @@ class RollingCurl {
 
         } while ($running);
         curl_multi_close($master);
+
+        if (isset($exceptionInCallback)) {
+            throw $exceptionInCallback;
+        }
+
         return true;
     }
 
